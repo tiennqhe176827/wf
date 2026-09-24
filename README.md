@@ -39,7 +39,8 @@ Sao chép `.env.example` thành `.env` và điền `OPENAI_API_KEY` để bật 
 ## Kiến trúc và dữ liệu
 
 - `server/weather.js`: WeatherProvider, OpenMeteoProvider, geocoding, normalization, cache theo lat/lon (5 phút), cache lớp bản đồ (10 phút).
-- `server/index.js`: API, cookie, giới hạn chat, tạo WeatherContext và gọi Responses API.
+- `server/index.js`: tạo/export native HTTP server, API, cookie, giới hạn chat, tạo WeatherContext và gọi Responses API.
+- `server.ts`: Vercel Node server entrypoint; `vercel.json` build Vite và đưa `dist/` vào function bundle.
 - `server/preferences.js`: PostgreSQL/SQLite preferences.
 - `shared/weather.js`: điểm hoạt động, cảnh báo, khung giờ, xử lý dữ liệu thiếu.
 - `src/`: dashboard và các màn hình.
@@ -55,7 +56,7 @@ Tất cả giá trị nội bộ dùng °C, km/h, mm, mét và US AQI. Chuyển 
 - Cảnh báo là phân tích ngưỡng, không phải cảnh báo chính thức. Điểm hoạt động là heuristic, không phải xác suất an toàn hay độ tin cậy mô hình.
 - Tìm kiếm Open-Meteo chủ yếu theo thành phố; địa chỉ chi tiết nên chọn bằng bản đồ/GPS. Reverse geocoding thiếu trường nào thì giữ null/không có.
 - Bản đồ lấy mẫu 9 điểm, chưa có radar liên tục hoặc hoạt ảnh hạt gió. Dữ liệu gió không được tự suy diễn giữa các điểm.
-- Chưa có đăng nhập/đồng bộ lịch giữa thiết bị. Server dùng `PORT` (mặc định `5173`) và nghe trên `0.0.0.0` để có thể chạy local hoặc trên Render/Railway; production phục vụ frontend từ `dist/`.
+- Chưa có đăng nhập/đồng bộ lịch giữa thiết bị. Server dùng `PORT` từ môi trường; `npm run dev` chạy Vite middleware, còn Vercel dùng `server.ts` và phục vụ frontend từ `dist/`.
 - Open-Meteo free API phù hợp thử nghiệm phi thương mại; triển khai thương mại cần xem điều khoản provider. Cần cấu hình cơ sở dữ liệu production và HTTPS khi đưa lên mạng.
 
 Tài liệu nguồn: [Open-Meteo](https://open-meteo.com/en/docs), [OpenAI Responses API](https://developers.openai.com/api/docs/quickstart), [OpenStreetMap tile policy](https://operations.osmfoundation.org/policies/tiles/).
