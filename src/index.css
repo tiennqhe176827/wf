@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;450;500;550;600;650;700;750;800&display=swap");
+:root {
+  font-family: "Be Vietnam Pro", sans-serif;
+  color: #e7eef6;
+  background: #0a111c;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --bg: #0a111c;
+  --sidebar: #0c141f;
+  --panel: #101b29;
+  --panel-hover: #172636;
+  --text: #e7eef6;
+  --muted: #8998ad;
+  --faint: #60738b;
+  --line: #233141;
+  --mint: #66dfc4;
+  --mint-bg: #16332f;
+  --input: #0d1724;
+  --amber: #e6bc77;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #eff4f8;
+  --sidebar: #f9fcff;
+  --panel: #fff;
+  --panel-hover: #f1f7fb;
+  --text: #203246;
+  --muted: #63768b;
+  --faint: #64778a;
+  --line: #dce6ee;
+  --mint: #167f70;
+  --mint-bg: #e0f5ed;
+  --input: #f5f8fb;
+  --amber: #a86c15;
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+  color: inherit;
+}
+button {
+  border: 0;
+  background: none;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+input,
+select {
+  min-width: 0;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 4px;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+::selection {
+  background: #62d8bd55;
+}
+small {
+  font-size: 12px;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: #425269;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
