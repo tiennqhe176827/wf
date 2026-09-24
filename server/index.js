@@ -13,6 +13,7 @@ import {
 
 import {
   getPreferences,
+  getPreferencesStorage,
   savePreferences,
   initPreferences,
 } from "./preferences.js";
@@ -39,10 +40,13 @@ await initPreferences();
  * Vercel / production:
  *   -> phục vụ frontend từ dist/
  */
-const production =
+const isVercel =
     process.env.VERCEL === "1" ||
     process.env.VERCEL_ENV === "production" ||
-    process.env.VERCEL_ENV === "preview" ||
+    process.env.VERCEL_ENV === "preview";
+
+const production =
+    isVercel ||
     process.env.NODE_ENV === "production" ||
     process.argv.includes("--production");
 
@@ -110,7 +114,10 @@ export const server = http.createServer(async (req, res) => {
    * Production / Vercel:
    *   dist/
    */
-  if (!url.pathname.startsWith("/api/")) {
+  const isApiRequest =
+    url.pathname === "/api" || url.pathname.startsWith("/api/");
+
+  if (!isApiRequest) {
     if (vite) {
       return vite.middlewares(req, res);
     }
@@ -218,12 +225,23 @@ export const server = http.createServer(async (req, res) => {
      */
 
     if (req.method === "POST" && req.headers.origin) {
-      const host = req.headers.host;
+      const hostHeaders = [
+        req.headers.host,
+        ...(Array.isArray(req.headers["x-forwarded-host"])
+          ? req.headers["x-forwarded-host"]
+          : [req.headers["x-forwarded-host"]]),
+      ]
+        .filter(Boolean)
+        .flatMap((value) => String(value).split(","))
+        .map((value) => value.trim())
+        .filter(Boolean);
 
-      const allowedOrigins = new Set([
-        `http://${host}`,
-        `https://${host}`,
-      ]);
+      const allowedOrigins = new Set(
+        hostHeaders.flatMap((host) => [
+          `http://${host}`,
+          `https://${host}`,
+        ]),
+      );
 
       if (!allowedOrigins.has(req.headers.origin)) {
         return send(
@@ -249,8 +267,7 @@ export const server = http.createServer(async (req, res) => {
       id = randomUUID();
 
       const secure =
-          process.env.COOKIE_SECURE === "true" ||
-          process.env.VERCEL === "1";
+          process.env.COOKIE_SECURE === "true" || isVercel;
 
       res.setHeader(
           "Set-Cookie",
@@ -277,9 +294,7 @@ export const server = http.createServer(async (req, res) => {
     ) {
       return send({
         ai: !!process.env.OPENAI_API_KEY,
-        database: process.env.DATABASE_URL
-            ? "PostgreSQL"
-            : "SQLite",
+        database: getPreferencesStorage(),
       });
     }
 
@@ -608,7 +623,8 @@ export const server = http.createServer(async (req, res) => {
  * node server/index.js
  *
  * Khi server.ts import file này trên Vercel,
- * đoạn dưới KHÔNG chạy.
+ * đoạn dưới KHÔNG chạy. Guard Vercel cũng tránh gọi listen hai lần
+ * nếu builder bundle gộp các module vào cùng một file.
  */
 
 const isMainModule =
@@ -616,7 +632,7 @@ const isMainModule =
     path.resolve(process.argv[1]) ===
     fileURLToPath(import.meta.url);
 
-if (isMainModule) {
+if (isMainModule && !isVercel) {
   const port = Number(
       process.env.PORT || 5173,
   );
