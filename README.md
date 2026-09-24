@@ -55,7 +55,7 @@ Tất cả giá trị nội bộ dùng °C, km/h, mm, mét và US AQI. Chuyển 
 - Cảnh báo là phân tích ngưỡng, không phải cảnh báo chính thức. Điểm hoạt động là heuristic, không phải xác suất an toàn hay độ tin cậy mô hình.
 - Tìm kiếm Open-Meteo chủ yếu theo thành phố; địa chỉ chi tiết nên chọn bằng bản đồ/GPS. Reverse geocoding thiếu trường nào thì giữ null/không có.
 - Bản đồ lấy mẫu 9 điểm, chưa có radar liên tục hoặc hoạt ảnh hạt gió. Dữ liệu gió không được tự suy diễn giữa các điểm.
-- Chưa có đăng nhập/đồng bộ lịch giữa thiết bị. Server mặc định chỉ nghe 127.0.0.1 để chạy cục bộ; chưa triển khai public.
+- Chưa có đăng nhập/đồng bộ lịch giữa thiết bị. Server dùng `PORT` (mặc định `5173`) và nghe trên `0.0.0.0` để có thể chạy local hoặc trên Render/Railway; production phục vụ frontend từ `dist/`.
 - Open-Meteo free API phù hợp thử nghiệm phi thương mại; triển khai thương mại cần xem điều khoản provider. Cần cấu hình cơ sở dữ liệu production và HTTPS khi đưa lên mạng.
 
 Tài liệu nguồn: [Open-Meteo](https://open-meteo.com/en/docs), [OpenAI Responses API](https://developers.openai.com/api/docs/quickstart), [OpenStreetMap tile policy](https://operations.osmfoundation.org/policies/tiles/).

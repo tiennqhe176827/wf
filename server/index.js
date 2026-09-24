@@ -39,15 +39,19 @@ const server = http.createServer(async (req, res) => {
     if (vite) return vite.middlewares(req, res);
     try {
       const pathname = decodeURIComponent(url.pathname);
-      const root = path.resolve("dist"),
-        file = path.resolve(
-          root,
-          "." + (pathname === "/" ? "/index.html" : pathname),
-        );
-      if (!file.startsWith(root + path.sep)) throw new Error("Invalid path");
-      const data = await readFile(file).catch(() =>
-        readFile(path.join(root, "index.html")),
+      const root = path.resolve("dist");
+      let file = path.resolve(
+        root,
+        "." + (pathname === "/" ? "/index.html" : pathname),
       );
+      if (!file.startsWith(root + path.sep)) throw new Error("Invalid path");
+      let data;
+      try {
+        data = await readFile(file);
+      } catch {
+        file = path.join(root, "index.html");
+        data = await readFile(file);
+      }
       const mime = {
         ".html": "text/html; charset=utf-8",
         ".js": "text/javascript",
@@ -207,7 +211,7 @@ const server = http.createServer(async (req, res) => {
     send({ error: error.message || "Không thể tải dữ liệu." }, 502);
   }
 });
-server.listen(Number(process.env.PORT || 5173), "127.0.0.1", () =>
+server.listen(Number(process.env.PORT || 5173), "0.0.0.0", () =>
   console.log(
     "WeatherAI ready at http://localhost:" + (process.env.PORT || 5173),
   ),
