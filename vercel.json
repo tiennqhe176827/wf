@@ -1,10 +1,7 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "npm run build",
   "functions": {
     "server.ts": {
-      "includeFiles": ["dist/**"]
+      "includeFiles": "dist/**"
     }
   }
 }
